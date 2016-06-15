@@ -351,6 +351,18 @@ module Css
         , wordSpacing
         , wordWrap
         , zIndex
+          -- TRANSFORM VALUES
+        , matrix
+        , translate
+        , translateX
+        , translateY
+        , scale
+        , scaleX
+        , scaleY
+        , rotate
+        , skew
+        , skewX
+        , skewY
           -- VALUES
         , absolute
         , relative
@@ -465,6 +477,8 @@ module Css
 # Properties
 @docs alignContent, alignItems, alignSelf, all, animation, animationDelay, animationDirection, animationDuration, animationFillMode, animationIterationCount, animationName, animationPlayState, animationTimingFunction, backfaceVisibility, background, backgroundAttachment, backgroundBlendMode, backgroundClip, backgroundColor, backgroundImage, backgroundOrigin, backgroundPosition, backgroundRepeat, backgroundSize, border, borderAll, borderBottom, borderBottomColor, borderBottomLeftRadius, borderBottomRightRadius, borderBottomStyle, borderBottomWidth, borderCollapse, borderColor, borderImage, borderImageOutset, borderImageRepeat, borderImageSlice, borderImageSource, borderImageWidth, borderLeft, borderLeftColor, borderLeftStyle, borderLeftWidth, borderRadius, borderRight, borderRightColor, borderRightStyle, borderRightWidth, borderSpacing, borderStyle, borderTop, borderTopColor, borderTopLeftRadius, borderTopRightRadius, borderTopStyle, borderTopWidth, borderWidth, bottom, boxShadow, boxSizing, captionSide, clear, clip, color, columnCount, columnFill, columnGap, columnRule, columnRuleColor, columnRuleStyle, columnRuleWidth, columnSpan, columnWidth, columns, content, counterIncrement, counterReset, cursor, direction, display, displayFlex, emptyCells, filter, flex, flexBasis, flexDirection, flexFlow, flexGrow, flexShrink, flexWrap, float, font, fontFamily, fontFamilies, fontSize, fontSizeAdjust, fontStretch, fontStyle, fontVariant, fontWeight, hangingPunctuation, height, justifyContent, left, letterSpacing, lineHeight, listStyle, listStyleImage, listStylePosition, listStyleType, margin, marginAll, marginBottom, marginLeft, marginRight, marginTop, maxHeight, maxWidth, minHeight, minWidth, navDown, navIndex, navLeft, navRight, navUp, opacity, order, outline, outlineColor, outlineOffset, outlineStyle, outlineWidth, overflow, overflowX, overflowY, padding, paddingAll, paddingBottom, paddingLeft, paddingRight, paddingTop, pageBreakAfter, pageBreakBefore, pageBreakInside, perspective, perspectiveOrigin, position, quotes, resize, right, tabSize, tableLayout, textAlign, textAlignLast, textDecoration, textDecorationColor, textDecorationLine, textDecorationStyle, textIndent, textJustify, textOverflow, textShadow, textTransform, top, transform, transformOrigin, transformStyle, transition, transitionDelay, transitionDuration, transitionProperty, transitionTimingFunction, unicodeBidi, verticalAlign, visibility, whiteSpace, width, wordBreak, wordSpacing, wordWrap, zIndex
 
+# Transform Values
+@docs matrix, translate, translateX, translateY , scale, scaleX , scaleY , rotate , skew , skewX, skewY
 
 # Values
 @docs init, inherit, absolute, relative, static, auto, inline, block, inlineBlock, flex', inlineFlex, listItem, runIn, table', inlineTable, tableCaption, tableColumnGroup, tableHeaderGroup, tableFooterGroup, tableRowGroup, tableCell, tableColumn, tableRow, baseline, center, flexStart, flexEnd, spaceBetween, spaceAround, column, columnReverse, row, rowReverse, wrap, nowrap, wrapReverse, none, left', right', both, normal, italic, oblique, smallCaps, repeat, repeatX, repeatY, noRepeat, scroll, visible, fixed, hidden, dotted, dashed, solid, double, groove, ridge, inset, outset, inside, outside, rtl, justify, underline, overline, lineThrough, embed', bidiOverride, pre', preLine, preWrap, borderBox, pointer, middle, collapse, uppercase, lowercase, capitalize
@@ -3175,6 +3189,87 @@ wordWrap v =
 zIndex : String -> Declaration
 zIndex v =
     ( "z-index", v )
+
+
+
+-- TRANSFORM VALUES
+
+
+{-| matrix transform
+-}
+matrix : number -> number -> number -> number -> number -> number -> String
+matrix a b c d e f =
+    "matrix(" ++ (join ", " (List.map toString [ a, b, c, d, e, f ])) ++ ")"
+
+
+{-| translate transform
+-}
+translate : String -> String -> String
+translate x y =
+    "translate(" ++ (join ", " [ x, y ]) ++ ")"
+
+
+{-| translateY transform
+-}
+translateX : String -> String
+translateX x =
+    "translateX(" ++ x ++ ")"
+
+
+{-| translateY transform
+-}
+translateY : String -> String
+translateY y =
+    "translateY(" ++ y ++ ")"
+
+
+{-| scale transform
+-}
+scale : number -> number -> String
+scale x y =
+    concat [ "scale(", (toString x), ", ", (toString y), ")" ]
+
+
+{-| scaleX transform
+-}
+scaleX : number -> String
+scaleX x =
+    concat [ "scaleX(", (toString x), ")" ]
+
+
+{-| scaleY transform
+-}
+scaleY : number -> String
+scaleY y =
+    concat [ "scaleY(", (toString y), ")" ]
+
+
+{-| rotate transform (in deg)
+-}
+rotate : number -> String
+rotate a =
+    concat [ "rotate(", (deg a), ")" ]
+
+
+{-| skew transform (in deg)
+-}
+skew : number -> number -> String
+skew x y =
+    concat [ "skew(", (deg x), (deg y), ")" ]
+
+
+{-| skewX transform (in deg)
+-}
+skewX : number -> String
+skewX x =
+    concat [ "skewX(", (deg x), ")" ]
+
+
+{-| skewY transform (in deg)
+-}
+skewY : number -> String
+skewY y =
+    concat [ "skewY(", (deg y), ")" ]
 
 
 
