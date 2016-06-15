@@ -13,30 +13,33 @@ type Classes
     namespace "demo"
 rules : List Rule
 rules =
-    withNamespace "demo"
-        [ (.) Main
-            [ background "red"
-            , width (vw 100)
-            , height (vh 100)
-            , displayFlex
-            , alignItems center
-            , justifyContent center
-            ]
-        , descendant [ (.) Main, Css.a ]
-            [ color "white"
-            , textDecoration none
-            , fontSize (px 32)
-            ]
-        , descendant [ (.) Main, Css.a & pHover ]
-            [ textDecoration underline
-            ]
+    [ (.) Main
+        [ background "red"
+        , width (vw 100)
+        , height (vh 100)
+        , displayFlex
+        , alignItems center
+        , justifyContent center
         ]
+    , descendant [ (.) Main, Css.a ]
+        [ color "white"
+        , textDecoration none
+        , fontSize (px 32)
+        ]
+    , descendant [ (.) Main, Css.a & pHover ]
+        [ textDecoration underline
+        ]
+    ]
+
+
+css =
+    withNamespace "demo" rules
 
 
 main : Html a
 main =
     styledNode []
-        rules
+        css
         [ Html.div [ class Main ]
             [ Html.a [ href "#" ]
                 [ text "A BIG Centered Link" ]

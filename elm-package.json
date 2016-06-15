@@ -1,12 +1,14 @@
 {
-    "version": "1.0.0",
+    "version": "1.1.0",
     "summary": "Functions to help you write CSS in Elm",
     "repository": "https://github.com/pdamoc/elm-css.git",
     "license": "MIT",
     "source-directories": [
         "src"
     ],
-    "exposed-modules": ["Css"],
+    "exposed-modules": [
+        "Css"
+    ],
     "dependencies": {
         "coreytrampe/elm-vendor": "2.0.2 <= v < 3.0.0",
         "elm-lang/core": "4.0.1 <= v < 5.0.0",

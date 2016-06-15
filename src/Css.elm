@@ -2,6 +2,7 @@ module Css
     exposing
         ( Rule
         , Declaration
+        , Namespace
           -- Integration functions
         , styledNode
         , render
@@ -262,6 +263,7 @@ module Css
         , float
         , font
         , fontFamily
+        , fontFamilies
         , fontSize
         , fontSizeAdjust
         , fontStretch
@@ -435,7 +437,7 @@ module Css
 
 # Types
 
-@docs Rule, Declaration
+@docs Rule, Declaration, Namespace
 
 # Integration functions
 
@@ -461,7 +463,7 @@ module Css
 
 
 # Properties
-@docs alignContent, alignItems, alignSelf, all, animation, animationDelay, animationDirection, animationDuration, animationFillMode, animationIterationCount, animationName, animationPlayState, animationTimingFunction, backfaceVisibility, background, backgroundAttachment, backgroundBlendMode, backgroundClip, backgroundColor, backgroundImage, backgroundOrigin, backgroundPosition, backgroundRepeat, backgroundSize, border, borderAll, borderBottom, borderBottomColor, borderBottomLeftRadius, borderBottomRightRadius, borderBottomStyle, borderBottomWidth, borderCollapse, borderColor, borderImage, borderImageOutset, borderImageRepeat, borderImageSlice, borderImageSource, borderImageWidth, borderLeft, borderLeftColor, borderLeftStyle, borderLeftWidth, borderRadius, borderRight, borderRightColor, borderRightStyle, borderRightWidth, borderSpacing, borderStyle, borderTop, borderTopColor, borderTopLeftRadius, borderTopRightRadius, borderTopStyle, borderTopWidth, borderWidth, bottom, boxShadow, boxSizing, captionSide, clear, clip, color, columnCount, columnFill, columnGap, columnRule, columnRuleColor, columnRuleStyle, columnRuleWidth, columnSpan, columnWidth, columns, content, counterIncrement, counterReset, cursor, direction, display, displayFlex, emptyCells, filter, flex, flexBasis, flexDirection, flexFlow, flexGrow, flexShrink, flexWrap, float, font, fontFamily, fontSize, fontSizeAdjust, fontStretch, fontStyle, fontVariant, fontWeight, hangingPunctuation, height, justifyContent, left, letterSpacing, lineHeight, listStyle, listStyleImage, listStylePosition, listStyleType, margin, marginAll, marginBottom, marginLeft, marginRight, marginTop, maxHeight, maxWidth, minHeight, minWidth, navDown, navIndex, navLeft, navRight, navUp, opacity, order, outline, outlineColor, outlineOffset, outlineStyle, outlineWidth, overflow, overflowX, overflowY, padding, paddingAll, paddingBottom, paddingLeft, paddingRight, paddingTop, pageBreakAfter, pageBreakBefore, pageBreakInside, perspective, perspectiveOrigin, position, quotes, resize, right, tabSize, tableLayout, textAlign, textAlignLast, textDecoration, textDecorationColor, textDecorationLine, textDecorationStyle, textIndent, textJustify, textOverflow, textShadow, textTransform, top, transform, transformOrigin, transformStyle, transition, transitionDelay, transitionDuration, transitionProperty, transitionTimingFunction, unicodeBidi, verticalAlign, visibility, whiteSpace, width, wordBreak, wordSpacing, wordWrap, zIndex
+@docs alignContent, alignItems, alignSelf, all, animation, animationDelay, animationDirection, animationDuration, animationFillMode, animationIterationCount, animationName, animationPlayState, animationTimingFunction, backfaceVisibility, background, backgroundAttachment, backgroundBlendMode, backgroundClip, backgroundColor, backgroundImage, backgroundOrigin, backgroundPosition, backgroundRepeat, backgroundSize, border, borderAll, borderBottom, borderBottomColor, borderBottomLeftRadius, borderBottomRightRadius, borderBottomStyle, borderBottomWidth, borderCollapse, borderColor, borderImage, borderImageOutset, borderImageRepeat, borderImageSlice, borderImageSource, borderImageWidth, borderLeft, borderLeftColor, borderLeftStyle, borderLeftWidth, borderRadius, borderRight, borderRightColor, borderRightStyle, borderRightWidth, borderSpacing, borderStyle, borderTop, borderTopColor, borderTopLeftRadius, borderTopRightRadius, borderTopStyle, borderTopWidth, borderWidth, bottom, boxShadow, boxSizing, captionSide, clear, clip, color, columnCount, columnFill, columnGap, columnRule, columnRuleColor, columnRuleStyle, columnRuleWidth, columnSpan, columnWidth, columns, content, counterIncrement, counterReset, cursor, direction, display, displayFlex, emptyCells, filter, flex, flexBasis, flexDirection, flexFlow, flexGrow, flexShrink, flexWrap, float, font, fontFamily, fontFamilies, fontSize, fontSizeAdjust, fontStretch, fontStyle, fontVariant, fontWeight, hangingPunctuation, height, justifyContent, left, letterSpacing, lineHeight, listStyle, listStyleImage, listStylePosition, listStyleType, margin, marginAll, marginBottom, marginLeft, marginRight, marginTop, maxHeight, maxWidth, minHeight, minWidth, navDown, navIndex, navLeft, navRight, navUp, opacity, order, outline, outlineColor, outlineOffset, outlineStyle, outlineWidth, overflow, overflowX, overflowY, padding, paddingAll, paddingBottom, paddingLeft, paddingRight, paddingTop, pageBreakAfter, pageBreakBefore, pageBreakInside, perspective, perspectiveOrigin, position, quotes, resize, right, tabSize, tableLayout, textAlign, textAlignLast, textDecoration, textDecorationColor, textDecorationLine, textDecorationStyle, textIndent, textJustify, textOverflow, textShadow, textTransform, top, transform, transformOrigin, transformStyle, transition, transitionDelay, transitionDuration, transitionProperty, transitionTimingFunction, unicodeBidi, verticalAlign, visibility, whiteSpace, width, wordBreak, wordSpacing, wordWrap, zIndex
 
 
 # Values
@@ -494,6 +496,12 @@ type alias Declaration =
     ( String, String )
 
 
+{-| A Namespace is a tupple of three functions that help create the id, class and classList
+-}
+type alias Namespace a b msg =
+    ( a -> Html.Attribute msg, b -> Html.Attribute msg, List b -> Html.Attribute msg )
+
+
 
 -- INTEGRATION FUNCTIONS
 
@@ -513,7 +521,7 @@ styledNode imports rules children =
         styleNode =
             Html.node "style"
                 [ Html.Attributes.type' "text/css" ]
-                [ Html.text (concat imports ++ (render rules)) ]
+                [ Html.text (join "\n" imports ++ "\n" ++ (render rules)) ]
     in
         Html.div [] (styleNode :: children)
 
@@ -537,10 +545,12 @@ renderDeclarations front =
 renderRule : Rule -> String
 renderRule rule =
     concat
-        [ rule.selector
-        , "{"
-        , renderDeclarations "" rule.declarations
-        , "}"
+        [ "\n"
+        , rule.selector
+        , "  {\n"
+        , renderDeclarations "    " rule.declarations
+        , "  }"
+        , "\n"
         ]
 
 
@@ -555,21 +565,7 @@ render =
 -}
 prettyPrint : List String -> List Rule -> String
 prettyPrint imports rules =
-    let
-        imps =
-            (join "\n" imports)
-
-        renderRulePretty rule =
-            concat
-                [ "\n"
-                , rule.selector
-                , "  {\n"
-                , renderDeclarations "    " rule.declarations
-                , "  }"
-                , "\n"
-                ]
-    in
-        concat (imps :: (List.map renderRulePretty rules))
+    concat ((join "\n" imports) :: (List.map renderRule rules))
 
 
 {-| Adds a namespace to the selectors of a list of Rules.
@@ -2521,6 +2517,13 @@ font v =
 fontFamily : String -> Declaration
 fontFamily v =
     ( "font-family", v )
+
+
+{-| font-family as a list of families
+-}
+fontFamilies : List String -> Declaration
+fontFamilies fs =
+    fontFamily (join ", " fs)
 
 
 {-| font-size
