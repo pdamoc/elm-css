@@ -590,7 +590,7 @@ withNamespace ns rules =
 
 {-| Adds a namespace to the selectors of a list of Rules.
 -}
-namespace : String -> ( a -> Html.Attribute msg, a -> Html.Attribute msg, List a -> Html.Attribute msg )
+namespace : String -> Namespace a b msg
 namespace ns =
     let
         addNS a =
