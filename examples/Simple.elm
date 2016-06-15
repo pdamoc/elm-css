@@ -15,16 +15,20 @@ rules : List Rule
 rules =
     withNamespace "demo"
         [ (.) Main
-            [ ( "background", "red" )
-            , ( "width", "100vw" )
-            , ( "height", "100vh" )
+            [ background "red"
+            , width (vw 100)
+            , height (vh 100)
+            , displayFlex
+            , alignItems center
+            , justifyContent center
             ]
         , descendant [ (.) Main, Css.a ]
-            [ ( "color", "white" )
-            , ( "text-decoration", "none" )
+            [ color "white"
+            , textDecoration none
+            , fontSize (px 32)
             ]
         , descendant [ (.) Main, Css.a & pHover ]
-            [ ( "text-decoration", "underline" )
+            [ textDecoration underline
             ]
         ]
 
@@ -35,6 +39,6 @@ main =
         rules
         [ Html.div [ class Main ]
             [ Html.a [ href "#" ]
-                [ text "a link" ]
+                [ text "A BIG Centered Link" ]
             ]
         ]
