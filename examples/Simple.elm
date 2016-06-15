@@ -1,7 +1,7 @@
 module Main exposing (..)
 
-import Html exposing (..)
-import Html.Attributes exposing (href)
+import Html as H exposing (Html)
+import Html.Attributes exposing (href, style)
 import Css exposing (..)
 
 
@@ -18,20 +18,22 @@ rules =
         , width (vw 100)
         , height (vh 100)
         , displayFlex
+        , flexDirection column
         , alignItems center
         , justifyContent center
         ]
-    , descendant [ (.) Main, Css.a ]
+    , descendant [ (.) Main, a ]
         [ color "white"
         , textDecoration none
         , fontSize (px 32)
         ]
-    , descendant [ (.) Main, Css.a & pHover ]
+    , descendant [ (.) Main, a & pHover ]
         [ textDecoration underline
         ]
     ]
 
 
+css : List Rule
 css =
     withNamespace "demo" rules
 
@@ -40,8 +42,12 @@ main : Html a
 main =
     styledNode []
         css
-        [ Html.div [ class Main ]
-            [ Html.a [ href "#" ]
-                [ text "A BIG Centered Link" ]
+        [ H.div [ class Main ]
+            [ H.a [ href "#" ]
+                [ H.text "A BIG Centered Link" ]
+            , H.div
+                -- inline style usage
+                [ style [ width (pct 80), height (px 100), backgroundColor "pink", marginAll (px 40) ] ]
+                []
             ]
         ]
