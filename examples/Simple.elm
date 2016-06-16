@@ -3,6 +3,7 @@ module Main exposing (..)
 import Html as H exposing (Html)
 import Html.Attributes exposing (href, style)
 import Css exposing (..)
+import Color exposing (red, white)
 
 
 type Classes
@@ -14,7 +15,7 @@ type Classes
 rules : List Rule
 rules =
     [ (.) Main
-        [ background "red"
+        [ background (color' red)
         , width (vw 100)
         , height (vh 100)
         , displayFlex
@@ -23,7 +24,7 @@ rules =
         , justifyContent center
         ]
     , descendant [ (.) Main, a ]
-        [ color "white"
+        [ color (color' white)
         , textDecoration none
         , fontSize (px 32)
         ]
