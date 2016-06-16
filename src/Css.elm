@@ -452,9 +452,9 @@ module Css
 {-| This module provides functions to help you write your CSS in Elm.
 
 The names of some of the functions/values clash. Here are the resolutions:
-1. for values add a prime mark as in left', right' or flex'
+1. for values add a prime mark as in `left'`, `right'` or `flex'`
 2. `em` is used for the unit measurement. For the type selector use `em'`
-3. for pseudoselectors `:left` and `:right` use leftP and rightP
+3. for pseudoselectors `:left` and `:right` use `leftP` and `rightP`
 
 # Types
 
