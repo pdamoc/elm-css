@@ -10,53 +10,56 @@ module Css
         , withNamespace
         , namespace
         , importUrl
+          -- Basic Selectors
+        , (.)
+        , (#)
+        , (.:)
+        , (#:)
+        , (!:)
+        , everything
+          -- Combination selectors
         , descendant
         , child
         , sibling
         , adjacent
-        , (&)
           -- Pseudo Selectors
-        , pAny
-        , pDefault
-        , pLink
-        , pVisited
-        , pHover
-        , pActive
-        , pFocus
-        , pTarget
-        , pEnabled
-        , pDisabled
-        , pChecked
-        , pIndeterminate
-        , pInvalid
-        , pValid
-        , pFullscreen
-        , pRoot
-        , pScope
-        , pFirstChild
-        , pLastChild
-        , pNthChild
-        , pNthLastChild
-        , pNthOfType
-        , pNthLastOfType
-        , pFirstOfType
-        , pLastOfType
-        , pOnlyOfType
-        , pLang
-        , pDir
-        , pEmpty
-        , pLeft
-        , pRight
-        , pFirstLetter
-        , pFirstLine
-        , pBefore
-        , pAfter
-        , pSelection
-        , pBackdrop
-          -- Basic Selectors
-        , (.)
-        , (#)
-        , everything
+        , any
+        , default
+        , link
+        , visited
+        , hover
+        , active
+        , focus
+        , target
+        , enabled
+        , disabled
+        , checked
+        , indeterminate
+        , invalid
+        , valid
+        , leftP
+        , rightP
+        , fullscreen
+        , root
+        , scope
+        , firstChild
+        , lastChild
+        , nthChild
+        , nthLastChild
+        , nthOfType
+        , nthLastOfType
+        , firstOfType
+        , lastOfType
+        , onlyOfType
+        , lang
+        , dir
+        , empty
+        , firstLetter
+        , firstLine
+        , before
+        , after
+        , selection
+        , backdrop
           -- Type Selectors
         , h1
         , h2
@@ -447,6 +450,11 @@ module Css
 
 {-| This module provides functions to help you write your CSS in Elm.
 
+The names of some of the functions/values clash. Here are the resolutions:
+    1. for values add a prime mark as in `left'`, `right'` or `flex'`
+    2. `em` is used for the unit measurement. For the type selector use `em'`
+    3. for pseudoselectors `:left` and `:right` use leftP and rightP
+
 # Types
 
 @docs Rule, Declaration, Namespace
@@ -457,13 +465,16 @@ module Css
 
 
 # Selector combinators
-@docs descendant, child, sibling, adjacent, (&)
+@docs descendant, child, sibling, adjacent
 
 # Pseudo Selectors
-@docs pAny, pDefault, pLink, pVisited, pHover, pActive, pFocus, pTarget, pEnabled, pDisabled, pChecked, pIndeterminate, pInvalid, pValid, pFullscreen, pRoot, pScope, pFirstChild, pLastChild, pNthChild, pNthLastChild, pNthOfType, pNthLastOfType, pFirstOfType, pLastOfType, pOnlyOfType, pLang, pDir, pEmpty, pLeft, pRight, pFirstLetter, pFirstLine, pBefore, pAfter, pSelection, pBackdrop
+
+
+
+@docs any, default, link, visited, hover, active, focus, target, enabled, disabled, checked, indeterminate, invalid, valid, fullscreen, root, scope, firstChild, lastChild, nthChild, nthLastChild, nthOfType, nthLastOfType, firstOfType, lastOfType, onlyOfType, lang, dir, empty, leftP, rightP, firstLetter, firstLine, before, after, selection, backdrop
 
 # Basic Selectors
-@docs (.), (#), everything
+@docs (.), (#), (.:), (#:), (!:), everything
 
 # Type Selectors
 @docs h1, h2, h3, h4, h5, h6, div, p, hr, pre, blockquote, span, a, code, em', strong, i, b, u, sub, sup, br, ol, ul, li, dl, dt, dd, img, iframe, canvas, svg, math, form, input, textarea, button, select, option, section, nav, article, aside, header, footer, address, main', body, figure, figcaption, table, caption, colgroup, col, tbody, thead, tfoot, tr, td, th, fieldset, legend, label, datalist, optgroup, keygen, output, progress, meter, audio, video, source, track, embed, object, param, ins, del, small, cite, dfn, abbr, time, var, samp, kbd, s, q, mark, ruby, rt, rp, bdi, bdo, wbr, details, summary, menuitem, menu
@@ -481,6 +492,7 @@ module Css
 @docs matrix, translate, translateX, translateY , scale, scaleX , scaleY , rotate , skew , skewX, skewY
 
 # Values
+
 @docs init, inherit, absolute, relative, static, auto, inline, block, inlineBlock, flex', inlineFlex, listItem, runIn, table', inlineTable, tableCaption, tableColumnGroup, tableHeaderGroup, tableFooterGroup, tableRowGroup, tableCell, tableColumn, tableRow, baseline, center, flexStart, flexEnd, spaceBetween, spaceAround, column, columnReverse, row, rowReverse, wrap, nowrap, wrapReverse, none, left', right', both, normal, italic, oblique, smallCaps, repeat, repeatX, repeatY, noRepeat, scroll, visible, fixed, hidden, dotted, dashed, solid, double, groove, ridge, inset, outset, inside, outside, rtl, justify, underline, overline, lineThrough, embed', bidiOverride, pre', preLine, preWrap, borderBox, pointer, middle, collapse, uppercase, lowercase, capitalize
 
 -}
@@ -527,7 +539,7 @@ importUrl url =
     concat [ "@import url(", url, ");" ]
 
 
-{-| A Html div to be user at the top most level in order to render the CSS.
+{-| A Html div to be used at the top most level in order to render the CSS.
 -}
 styledNode : List String -> List Rule -> List (Html a) -> Html a
 styledNode imports rules children =
@@ -671,237 +683,266 @@ multi =
     joinSelectors " , "
 
 
-{-| Combines a selector with a pseudo selector
--}
-(&) : (List Declaration -> Rule) -> String -> List Declaration -> Rule
-(&) decl pseudo =
-    sel ((trimRight (.selector (decl []))) ++ pseudo)
-
-
 
 -- PSEUDOSELECTORS
 
 
-{-| :any
+{-| :left
 -}
-pAny : String
-pAny =
-    ":any"
-
-
-{-| -}
-pDefault : String
-pDefault =
-    ":default"
-
-
-{-| -}
-pLink : String
-pLink =
-    ":link"
-
-
-{-| -}
-pVisited : String
-pVisited =
-    ":visited"
-
-
-{-| -}
-pHover : String
-pHover =
-    ":hover"
-
-
-{-| -}
-pActive : String
-pActive =
-    ":active"
-
-
-{-| -}
-pFocus : String
-pFocus =
-    ":focus"
-
-
-{-| -}
-pTarget : String
-pTarget =
-    ":target"
-
-
-{-| -}
-pEnabled : String
-pEnabled =
-    ":enabled"
-
-
-{-| -}
-pDisabled : String
-pDisabled =
-    ":disabled"
-
-
-{-| -}
-pChecked : String
-pChecked =
-    ":checked"
-
-
-{-| -}
-pIndeterminate : String
-pIndeterminate =
-    ":indeterminate"
-
-
-{-| -}
-pInvalid : String
-pInvalid =
-    ":invalid"
-
-
-{-| -}
-pValid : String
-pValid =
-    ":valid"
-
-
-{-| -}
-pFullscreen : String
-pFullscreen =
-    ":fullscreen"
-
-
-{-| -}
-pRoot : String
-pRoot =
-    ":root"
-
-
-{-| -}
-pScope : String
-pScope =
-    ":scope"
-
-
-{-| -}
-pFirstChild : String
-pFirstChild =
-    ":first-child"
-
-
-{-| -}
-pLastChild : String
-pLastChild =
-    ":last-child"
-
-
-{-| -}
-pNthChild : Int -> String
-pNthChild n =
-    ":nth-child(" ++ (toString n) ++ ")"
-
-
-{-| -}
-pNthLastChild : Int -> String
-pNthLastChild n =
-    ":nth-last-child(" ++ (toString n) ++ ")"
-
-
-{-| -}
-pNthOfType : String -> String
-pNthOfType s =
-    ":nth-of-type(" ++ s ++ ")"
-
-
-{-| -}
-pNthLastOfType : String -> String
-pNthLastOfType s =
-    ":nth-last-of-type(" ++ s ++ ")"
-
-
-{-| -}
-pFirstOfType : String
-pFirstOfType =
-    ":first-of-type"
-
-
-{-| -}
-pLastOfType : String
-pLastOfType =
-    ":last-of-type"
-
-
-{-| -}
-pOnlyOfType : String
-pOnlyOfType =
-    ":only-of-type"
-
-
-{-| -}
-pLang : String -> String
-pLang s =
-    ":lang(" ++ s ++ ")"
-
-
-{-| -}
-pDir : String -> String
-pDir s =
-    ":dir(" ++ s ++ ")"
-
-
-{-| -}
-pEmpty : String
-pEmpty =
-    ":empty"
-
-
-{-| -}
-pLeft : String
-pLeft =
+leftP : String
+leftP =
     ":left"
 
 
-{-| -}
-pRight : String
-pRight =
+{-| :right
+-}
+rightP : String
+rightP =
     ":right"
 
 
-{-| -}
-pFirstLetter : String
-pFirstLetter =
+{-| :any
+-}
+any : String
+any =
+    ":any"
+
+
+{-| :default
+-}
+default : String
+default =
+    ":default"
+
+
+{-| :link
+-}
+link : String
+link =
+    ":link"
+
+
+{-| :visited
+-}
+visited : String
+visited =
+    ":visited"
+
+
+{-| :hover
+-}
+hover : String
+hover =
+    ":hover"
+
+
+{-| :active
+-}
+active : String
+active =
+    ":active"
+
+
+{-| :focus
+-}
+focus : String
+focus =
+    ":focus"
+
+
+{-| :target
+-}
+target : String
+target =
+    ":target"
+
+
+{-| :enabled
+-}
+enabled : String
+enabled =
+    ":enabled"
+
+
+{-| :disabled
+-}
+disabled : String
+disabled =
+    ":disabled"
+
+
+{-| :checked
+-}
+checked : String
+checked =
+    ":checked"
+
+
+{-| :indeterminate
+-}
+indeterminate : String
+indeterminate =
+    ":indeterminate"
+
+
+{-| :invalid
+-}
+invalid : String
+invalid =
+    ":invalid"
+
+
+{-| :valid
+-}
+valid : String
+valid =
+    ":valid"
+
+
+{-| :fullscreen
+-}
+fullscreen : String
+fullscreen =
+    ":fullscreen"
+
+
+{-| :root
+-}
+root : String
+root =
+    ":root"
+
+
+{-| :scope
+-}
+scope : String
+scope =
+    ":scope"
+
+
+{-| :first-child
+-}
+firstChild : String
+firstChild =
+    ":first-child"
+
+
+{-| :last-child
+-}
+lastChild : String
+lastChild =
+    ":last-child"
+
+
+{-| :nth-child(
+-}
+nthChild : Int -> String
+nthChild n =
+    ":nth-child(" ++ (toString n) ++ ")"
+
+
+{-| :nth-last-child(
+-}
+nthLastChild : Int -> String
+nthLastChild n =
+    ":nth-last-child(" ++ (toString n) ++ ")"
+
+
+{-| :nth-of-type(
+-}
+nthOfType : String -> String
+nthOfType s =
+    ":nth-of-type(" ++ s ++ ")"
+
+
+{-| :nth-last-of-type(
+-}
+nthLastOfType : String -> String
+nthLastOfType s =
+    ":nth-last-of-type(" ++ s ++ ")"
+
+
+{-| :first-of-type
+-}
+firstOfType : String
+firstOfType =
+    ":first-of-type"
+
+
+{-| :last-of-type
+-}
+lastOfType : String
+lastOfType =
+    ":last-of-type"
+
+
+{-| :only-of-type
+-}
+onlyOfType : String
+onlyOfType =
+    ":only-of-type"
+
+
+{-| :lang(
+-}
+lang : String -> String
+lang s =
+    ":lang(" ++ s ++ ")"
+
+
+{-| :dir(
+-}
+dir : String -> String
+dir s =
+    ":dir(" ++ s ++ ")"
+
+
+{-| :empty
+-}
+empty : String
+empty =
+    ":empty"
+
+
+{-| ::first-letter
+-}
+firstLetter : String
+firstLetter =
     "::first-letter"
 
 
-{-| -}
-pFirstLine : String
-pFirstLine =
+{-| ::first-line
+-}
+firstLine : String
+firstLine =
     "::first-line"
 
 
-{-| -}
-pBefore : String
-pBefore =
+{-| ::before
+-}
+before : String
+before =
     "::before"
 
 
-{-| -}
-pAfter : String
-pAfter =
+{-| ::after
+-}
+after : String
+after =
     "::after"
 
 
-{-| -}
-pSelection : String
-pSelection =
+{-| ::selection
+-}
+selection : String
+selection =
     "::selection"
 
 
-{-| -}
-pBackdrop : String
-pBackdrop =
+{-| ::backdrop
+-}
+backdrop : String
+backdrop =
     "::backdrop"
 
 
@@ -921,6 +962,27 @@ pBackdrop =
 (#) : a -> List Declaration -> Rule
 (#) cls =
     sel (cons '#' (toString cls))
+
+
+{-| Combines a class selector with a pseudo selector
+-}
+(.:) : a -> String -> List Declaration -> Rule
+(.:) =
+    (.) >> (!:)
+
+
+{-| Combines an id selector with a pseudo selector
+-}
+(#:) : a -> String -> List Declaration -> Rule
+(#:) =
+    (#) >> (!:)
+
+
+{-| Combines an type selector with a pseudo selector
+-}
+(!:) : (List Declaration -> Rule) -> String -> List Declaration -> Rule
+(!:) decl pseudo =
+    sel ((trimRight (.selector (decl []))) ++ pseudo)
 
 
 {-| Creates a rule with selector "*"
