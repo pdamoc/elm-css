@@ -31,15 +31,10 @@ rules =
     ]
 
 
-css : List Rule
-css =
-    withNamespace "demo" rules
-
-
 main : Html a
 main =
     styledNode []
-        css
+        (withNamespace "demo" rules)
         [ H.div [ class Main ]
             [ H.a [ href "#" ]
                 [ H.text "A BIG Centered Link" ]
