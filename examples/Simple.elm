@@ -27,9 +27,7 @@ rules =
         , textDecoration none
         , fontSize (px 32)
         ]
-    , descendant [ (.) Main, a & pHover ]
-        [ textDecoration underline
-        ]
+    , (!:) a hover [ textDecoration underline ]
     ]
 
 
