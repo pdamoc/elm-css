@@ -3,7 +3,7 @@ module Main exposing (..)
 import Html as H exposing (Html)
 import Html.Attributes exposing (href, style)
 import Css exposing (..)
-import Color exposing (red, white)
+import Color exposing (red, white, lightRed)
 
 
 type Classes
@@ -41,7 +41,13 @@ main =
                 [ H.text "A BIG Centered Link" ]
             , H.div
                 -- inline style usage
-                [ style [ width (pct 80), height (px 100), backgroundColor "pink", marginAll (px 40) ] ]
+                [ style
+                    [ width (pct 80)
+                    , height (px 100)
+                    , backgroundColor (color' lightRed)
+                    , marginAll (px 40)
+                    ]
+                ]
                 []
             ]
         ]
