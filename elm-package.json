@@ -1,5 +1,5 @@
 {
-    "version": "2.1.0",
+    "version": "3.0.0",
     "summary": "Functions to help you write CSS in Elm",
     "repository": "https://github.com/pdamoc/elm-css.git",
     "license": "MIT",

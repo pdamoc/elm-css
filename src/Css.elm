@@ -171,6 +171,7 @@ module Css
         , deg
         , rad
         , just
+        , color'
           -- Properties
         , alignContent
         , alignItems
@@ -482,7 +483,7 @@ The names of some of the functions/values clash. Here are the resolutions:
 # Declarations
 
 # Units
-@docs px, pc, pct, em, rem, vw, vh, deg, rad, just
+@docs px, pc, pct, em, rem, vw, vh, deg, rad, just, color'
 
 
 # Properties
@@ -501,8 +502,10 @@ The names of some of the functions/values clash. Here are the resolutions:
 
 import Html exposing (Html)
 import Html.Attributes
-import String exposing (join, cons, concat, contains, words, split, trimRight)
+import String exposing (join, cons, concat, contains, words, split, trimRight, isEmpty, fromChar)
 import Vendor
+import Color exposing (Color, toRgb)
+import Char exposing (isUpper, toLower)
 
 
 -- TYPES
@@ -600,10 +603,10 @@ withNamespace : String -> List Rule -> List Rule
 withNamespace ns rules =
     let
         clsNs =
-            (cons '.' ns)
+            concat [ ".", ns, "-" ]
 
         idNs =
-            (cons '#' ns)
+            concat [ "#", ns, "-" ]
 
         replace s1 s2 =
             (join s2) << (split s1)
@@ -620,7 +623,7 @@ namespace : String -> Namespace a b msg
 namespace ns =
     let
         addNS a =
-            ns ++ (toString a)
+            ns ++ "-" ++ (processName a)
 
         id =
             Html.Attributes.id << addNS
@@ -950,18 +953,35 @@ backdrop =
 -- BASIC SELECTORS
 
 
+processName : b -> String
+processName name =
+    let
+        endcons c s =
+            s ++ (fromChar c)
+
+        lowerAndLine c acc =
+            if (isUpper c) && (isEmpty acc) then
+                endcons (toLower c) acc
+            else if isUpper c then
+                endcons (toLower c) (acc ++ "-")
+            else
+                endcons c acc
+    in
+        String.foldl lowerAndLine "" (toString name)
+
+
 {-| Creates a rule with a class selector
 -}
 (.) : a -> List Declaration -> Rule
-(.) cls =
-    sel (cons '.' (toString cls))
+(.) name =
+    sel (cons '.' (processName name))
 
 
 {-| Creates a rule with an id selector
 -}
 (#) : a -> List Declaration -> Rule
-(#) cls =
-    sel (cons '#' (toString cls))
+(#) name =
+    sel (cons '#' (processName name))
 
 
 {-| Combines a class selector with a pseudo selector
@@ -2304,6 +2324,20 @@ clip v =
 color : String -> Declaration
 color v =
     ( "color", v )
+
+
+{-| Color to webcolor
+-}
+color' : Color -> String
+color' c =
+    let
+        { red, green, blue, alpha } =
+            toRgb c
+
+        ( r, g, b, a ) =
+            ( just red, just green, just blue, just alpha )
+    in
+        concat [ "rgba( ", join ", " [ r, g, b, a ], " )" ]
 
 
 {-| column-count
